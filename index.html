@@ -38,16 +38,11 @@
     background:radial-gradient(120% 80% at 50% 110%,#3a1a06 0%,var(--ink) 60%)}
   #start h1{margin:0;font-size:clamp(34px,10vw,56px);font-weight:900;line-height:1.1;color:var(--orange);text-wrap:balance}
   #start p{margin:0;max-width:30ch;line-height:1.8;opacity:.85}
-  .carIcon{width:120px;height:60px;position:relative}
-  .carIcon:before{content:"";position:absolute;inset:18px 0 12px;background:var(--orange);border-radius:10px 14px 6px 6px}
-  .carIcon:after{content:"";position:absolute;left:28px;right:30px;top:2px;height:22px;background:var(--orange-d);border-radius:10px 10px 0 0}
-  .carIcon i{position:absolute;bottom:0;width:22px;height:22px;border-radius:50%;background:#222;border:4px solid #555}
-  .carIcon i:first-child{left:16px}.carIcon i:last-child{right:16px}
+  .brandLogo{width:min(240px,64vw);height:auto;display:block;margin-bottom:6px}
   .btn{font:inherit;font-weight:700;font-size:20px;border:0;border-radius:999px;padding:16px 38px;background:var(--orange);color:#fff;
     box-shadow:0 6px 0 var(--orange-d);cursor:pointer}
   .btn:active{transform:translateY(4px);box-shadow:0 2px 0 var(--orange-d)}
   .btn:focus-visible{outline:3px solid #fff;outline-offset:3px}
-  .link{background:none;border:0;color:var(--paper);opacity:.7;font:inherit;text-decoration:underline;cursor:pointer}
   #modeInfo{font-size:13px;opacity:.6}
   #err{color:#ffb38a;font-size:14px;max-width:32ch;line-height:1.7}
 
@@ -62,27 +57,58 @@
     padding:8px 12px;border-radius:12px;font-variant-numeric:tabular-nums;font-size:14px;direction:ltr}
   #controls{position:absolute;left:0;right:0;bottom:0;direction:ltr;display:flex;justify-content:space-between;align-items:flex-end;
     padding:0 max(16px,env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 22px) max(16px,env(safe-area-inset-left));pointer-events:none}
-  .pad{display:flex;gap:14px;pointer-events:auto}
+  .pad{display:flex;gap:12px;align-items:center;pointer-events:auto}
   .pad.v{flex-direction:column}
-  .ctl{width:80px;height:80px;border-radius:50%;border:3px solid rgba(255,255,255,.35);background:var(--glass);color:#fff;font-size:30px;
-    display:grid;place-items:center;touch-action:none;font-family:inherit;line-height:1;
-    -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-  .ctl.on{background:var(--orange);border-color:#fff}
-  .ctl.gas{width:92px;height:92px}
+  .ctl{width:76px;height:76px;padding:0;border-radius:50%;border:1.5px solid rgba(255,255,255,.3);background:var(--glass);color:#fff;
+    display:grid;place-items:center;touch-action:none;box-shadow:0 4px 14px rgba(0,0,0,.25);
+    transition:transform .12s ease-out,background-color .12s ease-out,border-color .12s ease-out;
+    -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+  .ctl svg{width:28px;height:28px;display:block;pointer-events:none}
+  .ctl[data-k="left"] svg{transform:rotate(180deg)}
+  .ctl[data-k="gas"] svg{transform:rotate(-90deg)}
+  .ctl[data-k="rev"] svg{transform:rotate(90deg)}
+  .ctl.on{background:var(--orange);border-color:rgba(255,255,255,.85);transform:scale(.93)}
+  .ctl.gas{width:88px;height:88px;border-color:rgba(255,106,19,.75)}
+  .ctl.gas svg{width:32px;height:32px}
   #controls.off .pad{opacity:.35;pointer-events:none}
 </style>
 </head>
 <body>
 <video id="video" playsinline muted autoplay hidden></video>
 <div id="stage"></div>
+<!-- shared control icon: rounded triangle pointing right, centered on its centroid so it sits optically centered -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <path id="tri" fill="currentColor" d="M8.2 5.6c0-1.1 1.2-1.8 2.1-1.2l9.6 6.4c.8.6.8 1.8 0 2.4l-9.6 6.4c-.9.6-2.1-.1-2.1-1.2z" transform="translate(-.3 0)"/>
+</defs></svg>
 
 <div id="overlay">
   <section id="start">
-    <div class="carIcon"><i></i><i></i></div>
+    <svg class="brandLogo" role="img" aria-label="تپسی شف" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 715.345 190.499">
+  <defs>
+    <linearGradient id="linear-gradient" x1="1414.261" y1="-7377.617" x2="1606.931" y2="-7291.438" gradientTransform="translate(-933 -7207) scale(1 -1)" gradientUnits="userSpaceOnUse">
+      <stop offset=".438" stop-color="#d7d7d7"/>
+      <stop offset=".861" stop-color="#fff"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="1436.848" y1="-7310.443" x2="1554.477" y2="-7267.613" xlink:href="#linear-gradient"/>
+  </defs>
+  <g id="chef__horizontal__inverse__fa">
+    <path d="M473.536,152.499s55.22-33.69,105.03-55.62c32.99-14.53,42.94-17.14,51.1-19.64,16.83-5.13,31.81-7.21,37.29-7.98,5.21-.71,8.61-.36,9.99,1.82,2.67,4.21-8.09,23.62-31.16,45.11-6.9,6.42-12.28,8.66-24.95,10.84-123.16,21.15-147.29,25.47-147.29,25.47h-.01Z" style="fill: #fff;"/>
+    <path d="M645.766,116.199c-6.9,6.44-12.27,8.67-24.96,10.85-120.16,20.63-146.07,25.23-147.28,25.45,1.95-.64,64.56-21.17,125.06-46.02,44.52-18.29,68.63-29.92,78.56-34.94,1.74,5.02-9.06,23.86-31.39,44.65l.01.01Z" style="fill: url(#linear-gradient);"/>
+    <path d="M622.816,49.769c-.12,3.5-6.47,11.05-15.77,21.1-9.33,10.09-16.24,11.83-31.02,15.33-14.77,3.51-26.82,5.37-70.64,20.88-.03,0-.04.01-.04.01,0,0,40.03-30.21,85.24-49.73,23.55-10.18,32.4-11.81,32.23-7.59Z" style="fill: #fff;"/>
+    <path d="M622.816,49.769c-.12,3.5-6.47,11.05-15.77,21.1-9.33,10.09-16.24,11.83-31.02,15.33-14.77,3.51-26.82,5.37-70.64,20.88,1.39-.61,41.89-18.49,78.41-36.41,19.29-9.46,31.59-16.39,39.02-20.9Z" style="fill: url(#linear-gradient-2);"/>
+    <path d="M203.868,91.774c-.325,1.513-1.046,2.905-2.082,3.778-1.056.853-2.133,1.392-4.306,1.392h-6.825l4.174-19.572-14.605,1.32-2.854,13.336c-.345,1.584-1.066,2.803-2.173,3.626-1.127.833-2.6,1.29-4.408,1.29h-7.201l4.682-21.969-14.493,1.3s-3.077,14.371-3.382,15.753c-.284,1.391-1.097,2.803-2.234,3.626-1.158.833-2.712,1.29-4.591,1.29h-13.704c2.756-5.22,4.068-11.132,5.236-16.479,2.99-13.694-3.102-22.413-16.539-22.447l-.01-.02c-9.73-.025-16.681,5.504-19.186,8.27-2.516,2.767-5.083,5.716-6.696,13.055-2.293,10.506,2.443,15.428,7.848,17.626h-48.786l4.51-20.988h-14.24l-3.311,15.398c-.904,4.296-.924,7.942-.04,11.01.873,3.067,2.681,5.373,5.423,6.896,2.732,1.544,6.246,2.285,10.512,2.285l46.828-.059c7.312.018,12.909-1.27,17.258-3.421,2.659,1.808,6.394,3.48,10.891,3.48l.003-.004-.003.015h10.938c3.179,0,5.911-.437,8.186-1.29,1.849-.711,3.545-1.676,5.078-2.915.356-.274.701-.579,1.036-.884.884,1.655,2.346,2.915,4.398,3.799,1.889.792,4.398,1.229,7.556,1.28.274.01.538.01.833.01,3.179,0,5.911-.437,8.237-1.29,1.859-.701,3.524-1.666,4.957-2.895.345-.284.66-.589.995-.904.944,1.655,2.407,2.915,4.387,3.799,1.818.792,4.246,1.229,7.272,1.28,6.307-.142,11.619-2.011,15.956-5.617,4.225-3.504,7.089-8.288,8.603-14.311l.02-.071,3.524-16.535-14.361,1.249-3.311,15.509ZM105.418,78.512c1.611-6.557,5.546-8.447,9.995-8.435,5.149.013,7.08,3.573,6.217,7.521-.832,3.868-2.626,10.363-2.626,10.363,0,0-3.883,1.382-8.389-.021-5.236-1.659-6.397-4.546-5.197-9.428Z" style="fill: #fff;"/>
+    <polygon points="202.303 38 190.938 38 188.734 48.309 200.089 48.309 202.303 38" style="fill: #fff;"/>
+    <polygon points="208.255 51.204 179.359 51.204 177.013 62.051 205.929 62.051 208.255 51.204" style="fill: #fff;"/>
+    <polygon points="132.771 39.33 117.657 39.33 115.21 50.746 130.313 50.746 132.771 39.33" style="fill: #fff;"/>
+    <path d="M478.926,51.008l-2.37,11.14h-29.7l2.38-11.14h29.69Z" style="fill: #fff;"/>
+    <path d="M403.396,138.329l-2.27,10.59h-11.66l2.27-10.59h11.66Z" style="fill: #fff;"/>
+    <path d="M415.436,124.209l-2.41,11.15h-29.69l2.4-11.15h29.7Z" style="fill: #fff;"/>
+    <path d="M478.876,75.028l-3.13,14.71c-1.47,6.9-4.5,12.26-9.05,16.08-4.57,3.83-10.07,5.73-16.53,5.73h-12.89c-7.44,0-10.92-4.2-11.53-4.89-.47.47-1.07,1.01-1.49,1.32-4.99,3.68-8.95,3.58-16.46,3.58h-12.15c-3.19,0-5.85-.39-7.97-1.17-2.13-.77-3.54-2.02-4.21-3.73-.51.48-1.16,1.03-1.59,1.34-.44.31-4.17,3.53-12.73,3.53h-1.58c-2.33,0-5.24-.53-7.01-1.31-2.04-.9-3.53-2.19-4.51-3.9-.46.45-.87.83-1.45,1.28-2.34,1.8-5.86,3.92-13.01,3.92h-1.44c-2.56,0-5.44-.53-7.29-1.31-2.11-.9-3.61-2.19-4.52-3.9-.48.44-1.12.96-1.52,1.25-3.51,2.72-7.29,3.97-14.26,3.97h-8.72c1.81,1.71.91,26.25-26.14,26.25h-17.1c-6.45,0-11.68-1.27-15.66-3.84-3.97-2.55-6.67-6.19-8.06-10.9-1.32-4.42-1.41-9.66-.25-15.74.01-.06,4.52-21.18,4.52-21.18l13.85,1.25s-2.16,10.1-4.47,20.91c-2.3,10.8,2.06,14.91,11.06,14.91h17.43c10.4,0,12.14-5.73,12.14-9.55,0-1.84-1.47-3.34-3.32-3.34h-16.9l3.88-13.35h41.95c4.65,0,6.43-2.52,6.97-5.03.54-2.51,3.34-15.63,3.34-15.63l14.16-1.28-4.68,21.94h8.14c4.98,0,6.32-3.14,6.73-5.03.4-1.89,2.81-13.15,2.81-13.15l14.27-1.29-4.15,19.47h7.69c2.91,0,5.68-1.08,6.52-5.03.85-3.95,3.35-15.64,3.35-15.64l14.05-1.27-4.68,21.94h23.61c4.05,0,5.37-2.29,5.81-4.36.44-2.06,3.49-16.28,3.49-16.28l14.4-1.29c-.4,1.91-3.5,16.49-4.69,21.94h21.26c2.85,0,5.24-1.58,6.02-5.25.51-2.34,3.28-15.4,3.28-15.4l14.39-1.29.02.01Z" style="fill: #fff;"/>
+  </g>
+</svg>
     <h1>ماشین نارنجی</h1>
     <p>یه ماشین اسباب‌بازی رو بذار روی زمین یا میزت و باهاش رانندگی کن.</p>
     <button class="btn" id="go">شروع</button>
-    <button class="link" id="goCam" hidden>حالت دوربین ساده</button>
     <div id="modeInfo">در حال بررسی گوشی…</div>
     <div id="err"></div>
   </section>
@@ -96,12 +122,12 @@
     </div>
     <div id="controls" class="off">
       <div class="pad">
-        <button class="ctl" data-k="left" aria-label="چپ">◀</button>
-        <button class="ctl" data-k="right" aria-label="راست">▶</button>
+        <button class="ctl" data-k="left" aria-label="چپ"><svg viewBox="0 0 24 24"><use href="#tri"/></svg></button>
+        <button class="ctl" data-k="right" aria-label="راست"><svg viewBox="0 0 24 24"><use href="#tri"/></svg></button>
       </div>
       <div class="pad v">
-        <button class="ctl gas" data-k="gas" aria-label="گاز">▲</button>
-        <button class="ctl" data-k="rev" aria-label="دنده عقب">▼</button>
+        <button class="ctl gas" data-k="gas" aria-label="گاز"><svg viewBox="0 0 24 24"><use href="#tri"/></svg></button>
+        <button class="ctl" data-k="rev" aria-label="دنده عقب"><svg viewBox="0 0 24 24"><use href="#tri"/></svg></button>
       </div>
     </div>
   </section>
@@ -202,7 +228,7 @@ function makeVan() {
   // flat decal (canvas texture with transparency) laid just above a body panel
   const decal = (w, h, tex, x, y, z, rotY) => {
     const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), M({ map: tex, transparent: true, roughness: .4, metalness: .05,
-      depthWrite: false, polygonOffset: true, polygonOffsetFactor: -4 }));
+      depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -2 }));
     m.position.set(x, y, z); m.rotation.y = rotY; v.add(m); return m;
   };
   const PX = 400; // decal texture pixels per meter
@@ -275,15 +301,17 @@ function makeVan() {
   decal(BODY_W, .52, gateTex, 0, .64, -1.953, Math.PI);
 
   // doors: seam, handle and the small horizontal logo (one per side)
-  const doorTex = flip => decalTex(.95, .74, x => {
-    const X = a => flip ? .95 - a : a;
+  // doors: seam, handle and the brandmark only; the decal stays inside the door, clear of the wheel arch
+  const DW = .62, DH = .5, DZ = .52, DY = .78;
+  const doorTex = flip => decalTex(DW, DH, x => {
+    const X = a => flip ? DW - a : a;
     x.strokeStyle = 'rgba(0,0,0,.25)'; x.lineWidth = .01;
-    x.beginPath(); x.moveTo(X(.02), .02); x.lineTo(X(.02), .72); x.stroke();     // rear door seam
-    x.fillStyle = '#2a2d33'; x.fillRect(Math.min(X(.1), X(.22)), .2, .12, .03); // handle
-    drawLogo(x, LOGO_HORIZONTAL_FA, .5, .4, .24);
+    x.beginPath(); x.moveTo(X(.02), .02); x.lineTo(X(.02), DH - .02); x.stroke();  // rear door seam
+    x.fillStyle = '#2a2d33'; x.fillRect(Math.min(X(.08), X(.2)), .1, .12, .03); // handle
+    drawLogo(x, LOGO_BRANDMARK, DW / 2 + (flip ? -.02 : .02), .37, .3); // sits low on the door, under the handle
   });
-  decal(.95, .74, doorTex(true), BODY_W / 2 + .003, .7, .68, Math.PI / 2);   // +x: texture-left is the front
-  decal(.95, .74, doorTex(false), -BODY_W / 2 - .003, .7, .68, -Math.PI / 2); // -x: texture-left is the rear
+  decal(DW, DH, doorTex(true), BODY_W / 2 + .003, DY, DZ, Math.PI / 2);   // +x: texture-left is the front
+  decal(DW, DH, doorTex(false), -BODY_W / 2 - .003, DY, DZ, -Math.PI / 2); // -x: texture-left is the rear
 
   // bumpers (navy, wrapping the corners), grille, lights, plate
   box(BODY_W + .08, .24, .16, navy, 0, .45, 1.98); box(BODY_W + .08, .24, .16, navy, 0, .45, -1.98);
@@ -465,7 +493,6 @@ let xrOK = false;
 (async () => {
   try { xrOK = !!(navigator.xr && await navigator.xr.isSessionSupported('immersive-ar')); } catch { xrOK = false; }
   $('modeInfo').textContent = xrOK ? 'حالت: AR واقعی (WebXR) با تشخیص سطح' : 'حالت: دوربین + ژیروسکوپ (این مرورگر WebXR نداره)';
-  $('goCam').hidden = !xrOK;
 })();
 // #preview: look at the van on a plain background (desktop testing, no camera)
 if (location.hash.startsWith('#preview')) {
@@ -478,7 +505,6 @@ if (location.hash.startsWith('#preview')) {
   renderer.setAnimationLoop(loop);
 }
 $('go').addEventListener('click', () => { $('err').textContent = ''; (xrOK ? startXR() : startCam()).catch(fail); });
-$('goCam').addEventListener('click', () => { $('err').textContent = ''; startCam().catch(fail); });
 </script>
 </body>
 </html>
